@@ -3,42 +3,53 @@ import React from 'react';
 import whatsappIcon from '../../assets/images/icons/whatsapp.svg';
 
 import './styles.css';
+import api from '../../services/api';
 
-function TeacherItem() {
-	return (
-		<article className="teacher-item">
-			<header>
-				<img
-					src="https://avatars2.githubusercontent.com/u/2254731?s=460&u=0ba16a79456c2f250e7579cb388fa18c5c2d7d65&v=4"
-					alt="Foto do Proffy"
-				/>
-				<div>
-					<strong>Diego Fernandes</strong>
-					<span>Química</span>
-				</div>
-			</header>
-
-			<p>
-				Entusiasta das melhores tecnologias de química avançada.
-				<br />
-				<br />
-				Apaixonado por explodir coisas em laboratório e por mudar a vida das
-				pessoas através de experiências. Mais de 200.000 pessoas já passaram por
-				uma das minhas explosões.
-			</p>
-
-			<footer>
-				<p>
-					Preço/hora
-					<strong>R$ 80,00</strong>
-				</p>
-				<button type="button">
-					<img src={whatsappIcon} alt="Whatsapp" />
-					Entrar em contato
-				</button>
-			</footer>
-		</article>
-	);
+export interface Teacher {
+  id: number;
+  avatar: string;
+  bio: string;
+  price: number;
+  name: string;
+  subject: string;
+  whatsapp: string;
 }
+
+interface TeacherItemProps {
+  teacher: Teacher;
+}
+
+const TeacherItem: React.FC<TeacherItemProps> = ({ teacher }) => {
+  function createNewConnection() {
+    api.post('connections', {
+      user_id: teacher.id,
+    });
+  }
+
+  return (
+    <article className="teacher-item">
+      <header>
+        <img src={teacher.avatar} alt="Foto do Proffy" />
+        <div>
+          <strong>{teacher.name}</strong>
+          <span>{teacher.subject}</span>
+        </div>
+      </header>
+
+      <p>{teacher.bio}</p>
+
+      <footer>
+        <p>
+          Preço/hora
+          <strong>R$ {teacher.price}</strong>
+        </p>
+        <a target="_blank" onClick={createNewConnection} href={`https://wa.me/${teacher.whatsapp}`}>
+          <img src={whatsappIcon} alt="Whatsapp" />
+          Entrar em contato
+        </a>
+      </footer>
+    </article>
+  );
+};
 
 export default TeacherItem;
